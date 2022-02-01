@@ -66,9 +66,11 @@ jobs:
 
       - name: Build Android Release Candidate
         run: |
-          openssl aes-256-cbc -K ${{ secrets.encrypted_cb15c65d6aeb_key }} -iv ${{ secrets.encrypted_cb15c65d6aeb_iv }} -in keystore.p12.enc -out keystore.p12 -d
-          npm run action gulp build android --buildMode=release --KEYSTORE=keystore.p12 --KEYALIAS=${{ secrets.KEY_ALIAS }} --STOREPASS=${{ secrets.KEY_STORE_PASSWORD }} --KEYPASS=${{ secrets.KEY_PASSWORD }}
-
+          npm run action gulp build android -- \
+            --buildMode=release \
+            --keyStore=keystore.p12 \
+            --keyAlias=privatekey \
+            --password=${{ secrets.KEY_STORE_PASSWORD }}
 
       - name: Upload Android Release Candidate
         uses: actions/upload-artifact@v2
@@ -76,4 +78,3 @@ jobs:
           name: client_android_release_${{ github.sha }}
           path: platforms/android/app/build/outputs
           if-no-files-found: error
-
