@@ -16,8 +16,13 @@
 TASK=$1
 PLATFORM=$2
 BUILD_MODE=debug
+ANDROID_KEY_STORE_PASSWORD=
 for i in "$@"; do
     case $i in
+    --androidKeyStorePassword=*)
+        ANDROID_KEY_STORE_PASSWORD="${i#*=}"
+        shift
+        ;;
     --buildMode=*)
         BUILD_MODE="${i#*=}"
         shift
@@ -30,4 +35,17 @@ for i in "$@"; do
     esac
 done
 
-npx gulp "${TASK}" --platform="${PLATFORM}" --buildMode="${BUILD_MODE}"
+# if [[ "${ANDROID_KEY_STORE_PASSWORD}" != "" && "${BUILD_MODE}" == "debug" || "${PLATFORM}" != "android" ]]; then
+#     echo "TODO error text"
+#     exit 1
+# fi
+
+# if [[ "${BUILD_MODE}" == "release" && "${PLATFORM}" == "android" && "${ANDROID_KEY_STORE_PASSWORD}" != "" ]]; then
+#     echo "TODO error text"
+#     exit 1
+# fi
+
+npx gulp "${TASK}" \
+    --platform="${PLATFORM}" \
+    --buildMode="${BUILD_MODE}" \
+    --androidKeyStorePassword="${ANDROID_KEY_STORE_PASSWORD}"

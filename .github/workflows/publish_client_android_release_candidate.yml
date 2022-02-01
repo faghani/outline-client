@@ -31,7 +31,6 @@ jobs:
       run: |
         git config --global user.name "OutlineBot"
         git config --global user.email "outlinebot@users.noreply.github.com"
-
         git tag "android-$(node scripts/get_version.mjs android)"
         git push origin "android-$(node scripts/get_version.mjs android)"
 
@@ -49,14 +48,14 @@ jobs:
         repository: ${{ env.RELEASES_REPOSITORY }}
         token: ${{ env.GITHUB_TOKEN }}
         path: outline-releases
-    
+
     - name: Push to Releases Repository
       run: |
         RELEASE_VERSION="$(node scripts/get_version.mjs android)"
-        cp client_android_release/Outline.apk outline-releases/client/Outline.apk
+        cp client_android_release/bundle/release/app-release.aab outline-releases/client/Outline.aab
         cd outline-releases
         git checkout master
-        git add client/Outline.apk
+        git add client/Outline.aab
         git commit -m "Release android client ${RELEASE_VERSION}"
         git tag "android-${RELEASE_VERSION}"
         git push origin "android-${RELEASE_VERSION}"

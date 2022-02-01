@@ -31,9 +31,7 @@ import {environmentJson} from "./scripts/environment_json.mjs";
 const {
   platform,
   buildMode,
-  keyStore,
-  password,
-  keyAlias
+  androidKeyStorePassword,
 } = minimist(process.argv, {boolean: true});
 
 //////////////////
@@ -96,7 +94,7 @@ function cordovaCompile() {
   const compileArgs = platform === "ios" ? "--device" : "";
   let releaseArgs = "";
   if (buildMode === "release" && platform === "android") {
-    releaseArgs = `--release -- --keystore=${keyStore} --storePassword=${password} --alias=${keyAlias} --password=${pasword}`;
+    releaseArgs = `--release -- --keystore=keystore.p12 --alias=privatekey --storePassword=${androidKeyStorePassword} --password=${androidKeyStorePassword}`;
   } else if (buildMode === "release") {
     releaseArgs = "--release";
   }

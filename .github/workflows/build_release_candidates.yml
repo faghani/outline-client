@@ -68,9 +68,7 @@ jobs:
         run: |
           npm run action gulp build android -- \
             --buildMode=release \
-            --keyStore=keystore.p12 \
-            --keyAlias=privatekey \
-            --password=${{ secrets.KEY_STORE_PASSWORD }}
+            --androidKeyStorePassword=${{ secrets.KEY_STORE_PASSWORD }}
 
       - name: Upload Android Release Candidate
         uses: actions/upload-artifact@v2
