@@ -70,13 +70,13 @@ jobs:
             --buildMode=release \
             --androidKeyStorePassword=${{ secrets.KEY_STORE_PASSWORD }}
 
-          bundletool build-apks \
+          java -jar bundletool.jar build-apks \
             --bundle=platforms/android/app/build/outputs/bundle/release/app-release.aab \
             --output=Outline.apks \
             --ks=keystore.p12 \
-            --ks-pass=${{ secrets.KEY_STORE_PASSWORD }} \
+            --ks-pass=pass:${{ secrets.KEY_STORE_PASSWORD }} \
             --ks-key-alias=privatekey \
-            --key-pass=${{ secrets.KEY_STORE_PASSWORD }}
+            --key-pass=pass:${{ secrets.KEY_STORE_PASSWORD }}
 
       - name: Upload Android Release Candidate
         uses: actions/upload-artifact@v2

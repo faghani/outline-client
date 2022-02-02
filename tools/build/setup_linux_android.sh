@@ -51,3 +51,7 @@ rm android-commandline-tools.zip
 PATH="${PATH}:${ANDROID_SDK_ROOT}/platform-tools:${ANDROID_SDK_ROOT}/cmdline-tools/tools/bin"
 
 yes | sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" "ndk;${NDK_VERSION}"
+
+wget \
+  -q https://github.com/google/bundletool/releases/download/1.8.2/bundletool-all-1.8.2.jar \
+  -O bundletool.jar
