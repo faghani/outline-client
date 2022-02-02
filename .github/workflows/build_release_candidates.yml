@@ -70,9 +70,17 @@ jobs:
             --buildMode=release \
             --androidKeyStorePassword=${{ secrets.KEY_STORE_PASSWORD }}
 
+          bundletool build-apks \
+            --bundle=platforms/android/app/build/outputs/bundle/release/app-release.aab \
+            --output=Outline.apks \
+            --ks=keystore.p12 \
+            --ks-pass=${{ secrets.KEY_STORE_PASSWORD }} \
+            --ks-key-alias=privatekey \
+            --key-pass=${{ secrets.KEY_STORE_PASSWORD }}
+
       - name: Upload Android Release Candidate
         uses: actions/upload-artifact@v2
         with:
           name: client_android_release_${{ github.sha }}
-          path: platforms/android/app/build/outputs
+          path: Outline.apks
           if-no-files-found: error
