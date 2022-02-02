@@ -70,6 +70,10 @@ jobs:
             --buildMode=release \
             --androidKeyStorePassword=${{ secrets.KEY_STORE_PASSWORD }}
 
+          wget \
+            -q https://github.com/google/bundletool/releases/download/1.8.2/bundletool-all-1.8.2.jar \
+            -O bundletool.jar
+
           java -jar bundletool.jar build-apks \
             --bundle=platforms/android/app/build/outputs/bundle/release/app-release.aab \
             --output=Outline.apks \
