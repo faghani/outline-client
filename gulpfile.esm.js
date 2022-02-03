@@ -94,7 +94,7 @@ function cordovaCompile() {
   const compileArgs = platform === "ios" ? "--device" : "";
   let releaseArgs = "";
   if (buildMode === "release" && platform === "android") {
-    releaseArgs = `--release -- --keystore=keystore.p12 --alias=privatekey --storePassword=${androidKeyStorePassword} --password=${androidKeyStorePassword}`;
+    releaseArgs = `--release -- --keystore=keystore.p12 --alias=privatekey "--storePassword=$KEY_STORE_PASSWORD" "--password=$KEY_STORE_PASSWORD"`;
   } else if (buildMode === "release") {
     releaseArgs = "--release";
   }

@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 15
     env:
       RELEASES_REPOSITORY: ${{ secrets.RELEASES_REPOSITORY }}
-      GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      RELEASES_DEPLOY_TOKEN: ${{ secrets.RELEASES_DEPLOY_TOKEN }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
@@ -35,7 +35,7 @@ jobs:
         git push origin "android-$(node scripts/get_version.mjs android)"
 
     - name: Download Release Candidate
-      uses: dawidd6/action-download-artifact@v2
+      uses: dawidd6/action-download-artifact@575b1e4167df67acf7e692af784566618b23c71e
       with:
         workflow: build_release_candidates.yml
         commit: ${{ github.event.inputs.commit_sha }}
@@ -46,7 +46,7 @@ jobs:
       uses: actions/checkout@v2.3.4
       with:
         repository: ${{ env.RELEASES_REPOSITORY }}
-        token: ${{ env.GITHUB_TOKEN }}
+        token: ${{ env.RELEASES_DEPLOY_TOKEN }}
         path: outline-releases
 
     - name: Push to Releases Repository

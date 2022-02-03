@@ -44,6 +44,8 @@ jobs:
     environment: Client Android Release
     env:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+      KEY_STORE_CONTENTS: ${{ secrets.KEY_STORE_CONTENTS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -66,9 +68,9 @@ jobs:
 
       - name: Build Android Release Candidate
         run: |
-          npm run action gulp build android -- \
-            --buildMode=release \
-            --androidKeyStorePassword=${{ secrets.KEY_STORE_PASSWORD }}
+          cat "$KEY_STORE_CONTENTS" > keystore.p12
+
+          npm run action gulp build android -- --buildMode=release
 
           wget \
             -q https://github.com/google/bundletool/releases/download/1.8.2/bundletool-all-1.8.2.jar \
@@ -78,9 +80,9 @@ jobs:
             --bundle=platforms/android/app/build/outputs/bundle/release/app-release.aab \
             --output=Outline.apks \
             --ks=keystore.p12 \
-            --ks-pass=pass:${{ secrets.KEY_STORE_PASSWORD }} \
+            "--ks-pass=pass:$KEY_STORE_PASSWORD" \
             --ks-key-alias=privatekey \
-            --key-pass=pass:${{ secrets.KEY_STORE_PASSWORD }}
+            "--key-pass=pass:$KEY_STORE_PASSWORD"
 
       - name: Upload Android Release Candidate
         uses: actions/upload-artifact@v2

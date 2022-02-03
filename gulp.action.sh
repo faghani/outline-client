@@ -16,13 +16,8 @@
 TASK=$1
 PLATFORM=$2
 BUILD_MODE=debug
-ANDROID_KEY_STORE_PASSWORD=
 for i in "$@"; do
     case $i in
-    --androidKeyStorePassword=*)
-        ANDROID_KEY_STORE_PASSWORD="${i#*=}"
-        shift
-        ;;
     --buildMode=*)
         BUILD_MODE="${i#*=}"
         shift
@@ -35,15 +30,11 @@ for i in "$@"; do
     esac
 done
 
-# if [[ "${ANDROID_KEY_STORE_PASSWORD}" != "" && "${BUILD_MODE}" == "debug" || "${PLATFORM}" != "android" ]]; then
-#     echo "TODO error text"
-#     exit 1
-# fi
+if [[ "${PLATFORM}" == "android" && "${BUILD_MODE}" == "release"  && ("${KEY_STORE_PASSWORD}" == "" || "${KEY_STORE_CONTENTS}" == "") ]]; then
+    echo "Both 'KEY_STORE_PASSWORD' and 'KEY_STORE_CONTENTS' must be defined to sign an Android Release!"
+    exit 1
+fi
 
-# if [[ "${BUILD_MODE}" == "release" && "${PLATFORM}" == "android" && "${ANDROID_KEY_STORE_PASSWORD}" != "" ]]; then
-#     echo "TODO error text"
-#     exit 1
-# fi
 
 npx gulp "${TASK}" \
     --platform="${PLATFORM}" \
