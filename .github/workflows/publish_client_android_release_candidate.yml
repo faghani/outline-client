@@ -15,6 +15,7 @@ jobs:
     env:
       RELEASES_REPOSITORY: ${{ secrets.RELEASES_REPOSITORY }}
       RELEASES_DEPLOY_TOKEN: ${{ secrets.RELEASES_DEPLOY_TOKEN }}
+      RELEASE_COMMIT_SHA: ${{ github.event.inputs.commit_sha }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
@@ -38,8 +39,8 @@ jobs:
       uses: dawidd6/action-download-artifact@575b1e4167df67acf7e692af784566618b23c71e
       with:
         workflow: build_release_candidates.yml
-        commit: ${{ github.event.inputs.commit_sha }}
-        name: client_android_release_${{ github.event.inputs.commit_sha }}
+        commit: ${{ env.RELEASE_COMMIT_SHA }}
+        name: client_android_release_${{ env.RELEASE_COMMIT_SHA }}
         path: client_android_release
 
     - name: Checkout Releases Repository
