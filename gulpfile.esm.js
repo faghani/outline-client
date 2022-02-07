@@ -90,14 +90,16 @@ function cordovaCompile() {
   const platformArgs = platform === "android" ? "--gradleArg=-PcdvBuildMultipleApks=true" : "";
   const compileArgs = platform === "ios" ? "--device" : "";
   let releaseArgs = "";
-  if (platform === 'android' && platform === 'release' &&
-      !(ANDROID_KEY_STORE_PASSWORD && ANDROID_KEY_STORE_CONTENTS)) {
-    throw new Error(
-        'Both \'ANDROID_KEY_STORE_PASSWORD\' and \'ANDROID_KEY_STORE_CONTENTS\' must be defined in the environment to sign an Android Release!');
-  } else if (platform === 'android' && platform === 'release') {
-    releaseArgs = `--release -- --keystore=keystore.p12 --alias=privatekey "--storePassword=$ANDROID_KEY_STORE_PASSWORD" "--password=$ANDROID_KEY_STORE_PASSWORD"`;
-  } else if (platform === 'release') {
-    releaseArgs = "--release";
+  if (buildMode === 'release') {
+    if (platform === 'android') {
+      if !(ANDROID_KEY_STORE_PASSWORD && ANDROID_KEY_STORE_CONTENTS)) {
+        throw new Error(
+            'Both \'ANDROID_KEY_STORE_PASSWORD\' and \'ANDROID_KEY_STORE_CONTENTS\' must be defined in the environment to sign an Android Release!');
+      }
+      releaseArgs = `--release -- --keystore=keystore.p12 --alias=privatekey "--storePassword=$ANDROID_KEY_STORE_PASSWORD" "--password=$ANDROID_KEY_STORE_PASSWORD"`;
+    } else {
+      releaseArgs = "--release";
+    }
   }
   return runCommand(`cordova compile ${platform} ${compileArgs} ${releaseArgs} -- ${platformArgs}`);
 }
