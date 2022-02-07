@@ -86,7 +86,7 @@ To open the macOS project on XCode:
 
 To open the iOS project on XCode:
 
-    ope ./platforms/ios/Outline.xcodeproj
+    open ./platforms/ios/Outline.xcodeproj
 
 To learn more about developing for Apple, see [docs/apple-development](docs/apple-development.md)
 
@@ -130,7 +130,7 @@ For your CI to run smoothly, you'll need the following in your ENV:
 - `RELEASES_REPOSITORY` - the username and repository name of the repository you're pushing releases to. In our case, `Jigsaw-Code/outline-releases`
 - `RELEASES_DEPLOY_KEY` - the ssh deploy key for the releases repository - [how to set this up](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2)
 - `ANDROID_KEY_STORE_CONTENTS` - the contents of your [android keystore.jkr](https://developer.android.com/training/articles/keystore) file
-- `ANDROID_KEY_STORE_PASSWORD` - the password required to unlock your android keystore
+- `ANDROID_KEY_STORE_PASSWORD` - the password required to unlock your android keystore. We assume your key and keystore password are the same.
 - `IOS_MATCH_GIT_BASIC_AUTHORIZATION` - the base64'd username and access token necessary to access your fastlane iOS credentials [match repository](https://docs.fastlane.tools/actions/match/)
 - `IOS_MATCH_PASSWORD` - the password needed to open your match repository
 
