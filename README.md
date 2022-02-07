@@ -86,7 +86,7 @@ To open the macOS project on XCode:
 
 To open the iOS project on XCode:
 
-    open ./platforms/ios/Outline.xcodeproj
+    ope ./platforms/ios/Outline.xcodeproj
 
 To learn more about developing for Apple, see [docs/apple-development](docs/apple-development.md)
 
@@ -120,6 +120,19 @@ export SENTRY_DSN=[Sentry development API key]
 [platform-specific build command]
 ```
 Release builds on CI are configured with a production Sentry API key.
+
+
+## CI Environment Variables
+
+For your CI to run smoothly, you'll need the following in your ENV:
+
+- `SENTRY_DSN` - [url required](https://docs.sentry.io/product/sentry-basics/dsn-explainer/) to enable sentry integration. Same across all platforms.
+- `RELEASES_REPOSITORY` - the username and repository name of the repository you're pushing releases to. In our case, `Jigsaw-Code/outline-releases`
+- `RELEASES_DELPOY_KEY` - the ssh deploy key for the releases repository - [how to set this up](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2)
+- `ANDROID_KEY_STORE_CONTENTS` - the contents of your [android keystore.jkr](https://developer.android.com/training/articles/keystore) file
+- `ANDROID_KEY_STORE_PASSWORD` - the password required to unlock your android keystore
+- `IOS_MATCH_GIT_BASIC_AUTHORIZATION` - the base64'd username and accesstoken necessary to access your fastlane ios credentials [match repository](https://docs.fastlane.tools/actions/match/)
+- `IOS_MATCH_PASSWORD` - the password needed to open your match repository
 
 ## Support
 

@@ -29,7 +29,7 @@ import {environmentJson} from "./scripts/environment_json.mjs";
 //////////////////
 //////////////////
 const {platform, buildMode} = minimist(process.argv, {boolean: true});
-const {KEY_STORE_PASSWORD, KEY_STORE_CONTENTS} = process.env;
+const {ANDROID_KEY_STORE_PASSWORD, ANDROID_KEY_STORE_CONTENTS} = process.env;
 
 //////////////////
 //////////////////
@@ -91,11 +91,11 @@ function cordovaCompile() {
   const compileArgs = platform === "ios" ? "--device" : "";
   let releaseArgs = "";
   if (platform === 'android' && platform === 'release' &&
-      !(KEY_STORE_PASSWORD && KEY_STORE_CONTENTS)) {
+      !(ANDROID_KEY_STORE_PASSWORD && ANDROID_KEY_STORE_CONTENTS)) {
     throw new Error(
-        'Both \'KEY_STORE_PASSWORD\' and \'KEY_STORE_CONTENTS\' must be defined in the environment to sign an Android Release!');
+        'Both \'ANDROID_KEY_STORE_PASSWORD\' and \'ANDROID_KEY_STORE_CONTENTS\' must be defined in the environment to sign an Android Release!');
   } else if (platform === 'android' && platform === 'release') {
-    releaseArgs = `--release -- --keystore=keystore.p12 --alias=privatekey "--storePassword=$KEY_STORE_PASSWORD" "--password=$KEY_STORE_PASSWORD"`;
+    releaseArgs = `--release -- --keystore=keystore.p12 --alias=privatekey "--storePassword=$ANDROID_KEY_STORE_PASSWORD" "--password=$ANDROID_KEY_STORE_PASSWORD"`;
   } else if (platform === 'release') {
     releaseArgs = "--release";
   }
