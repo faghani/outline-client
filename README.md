@@ -131,7 +131,7 @@ For your CI to run smoothly, you'll need the following in your ENV:
 - `RELEASES_DELPOY_KEY` - the ssh deploy key for the releases repository - [how to set this up](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2)
 - `ANDROID_KEY_STORE_CONTENTS` - the contents of your [android keystore.jkr](https://developer.android.com/training/articles/keystore) file
 - `ANDROID_KEY_STORE_PASSWORD` - the password required to unlock your android keystore
-- `IOS_MATCH_GIT_BASIC_AUTHORIZATION` - the base64'd username and accesstoken necessary to access your fastlane ios credentials [match repository](https://docs.fastlane.tools/actions/match/)
+- `IOS_MATCH_GIT_BASIC_AUTHORIZATION` - the base64'd username and access token necessary to access your fastlane iOS credentials [match repository](https://docs.fastlane.tools/actions/match/)
 - `IOS_MATCH_PASSWORD` - the password needed to open your match repository
 
 ## Support
