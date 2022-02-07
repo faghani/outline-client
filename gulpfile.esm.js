@@ -92,7 +92,7 @@ function cordovaCompile() {
   let releaseArgs = "";
   if (buildMode === 'release') {
     if (platform === 'android') {
-      if !(ANDROID_KEY_STORE_PASSWORD && ANDROID_KEY_STORE_CONTENTS)) {
+      if (!(ANDROID_KEY_STORE_PASSWORD && ANDROID_KEY_STORE_CONTENTS)) {
         throw new Error(
             'Both \'ANDROID_KEY_STORE_PASSWORD\' and \'ANDROID_KEY_STORE_CONTENTS\' must be defined in the environment to sign an Android Release!');
       }
