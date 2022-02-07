@@ -30,12 +30,6 @@ for i in "$@"; do
     esac
 done
 
-if [[ "${PLATFORM}" == "android" && "${BUILD_MODE}" == "release"  && ("${KEY_STORE_PASSWORD}" == "" || "${KEY_STORE_CONTENTS}" == "") ]]; then
-    echo "Both 'KEY_STORE_PASSWORD' and 'KEY_STORE_CONTENTS' must be defined to sign an Android Release!"
-    exit 1
-fi
-
-
 npx gulp "${TASK}" \
     --platform="${PLATFORM}" \
     --buildMode="${BUILD_MODE}" \
