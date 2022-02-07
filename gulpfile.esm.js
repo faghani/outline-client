@@ -29,7 +29,6 @@ import {environmentJson} from "./scripts/environment_json.mjs";
 //////////////////
 //////////////////
 const {platform, buildMode} = minimist(process.argv, {boolean: true});
-
 const {KEY_STORE_PASSWORD, KEY_STORE_CONTENTS} = process.env;
 
 //////////////////

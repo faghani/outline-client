@@ -32,5 +32,4 @@ done
 
 npx gulp "${TASK}" \
     --platform="${PLATFORM}" \
-    --buildMode="${BUILD_MODE}" \
-    --androidKeyStorePassword="${ANDROID_KEY_STORE_PASSWORD}"
+    --buildMode="${BUILD_MODE}"
