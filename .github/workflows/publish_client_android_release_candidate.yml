@@ -62,10 +62,10 @@ jobs:
       - name: Push to Releases Repository
         run: |
           RELEASE_VERSION="$(node scripts/get_version.mjs android)"
-          cp client_android_release/Outline.apks outline-releases/client/Outline.apks
+          cp client_android_release/Outline.apk outline-releases/client/Outline.apk
           cd outline-releases
           git checkout master
-          git add client/Outline.apks
+          git add client/Outline.apk
           git commit -m "Release android client ${RELEASE_VERSION}"
           git tag "android-${RELEASE_VERSION}"
           git push origin "android-${RELEASE_VERSION}"

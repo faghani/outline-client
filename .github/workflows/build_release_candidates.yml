@@ -11,7 +11,7 @@ on:
 
 jobs:
   linux:
-    name: Build Linux Release Candidate
+    name: Build Client Linux Release Candidate
     runs-on: ubuntu-20.04
     timeout-minutes: 15
     env:
@@ -38,7 +38,7 @@ jobs:
           path: build/dist
           if-no-files-found: error
   android:
-    name: Build Android Release Candidate
+    name: Build Client Android Release Candidate
     runs-on: ubuntu-20.04
     timeout-minutes: 15
     environment: Client Android Release
@@ -78,7 +78,8 @@ jobs:
 
           java -jar bundletool.jar build-apks \
             --bundle=platforms/android/app/build/outputs/bundle/release/app-release.aab \
-            --output=Outline.apks \
+            --output=Outline.apk \
+            --mode=universal
             --ks=keystore.p12 \
             "--ks-pass=pass:$ANDROID_KEY_STORE_PASSWORD" \
             --ks-key-alias=privatekey \
@@ -89,6 +90,6 @@ jobs:
         with:
           name: client_android_release_${{ github.sha }}
           path: |
-            Outline.apks
+            Outline.apk
             platforms/android/app/build/outputs/bundle
           if-no-files-found: error
