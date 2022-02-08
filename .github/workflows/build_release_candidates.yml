@@ -68,7 +68,7 @@ jobs:
 
       - name: Build Android Release Candidate
         run: |
-          echo "$ANDROID_KEY_STORE_CONTENTS" > keystore.p12
+          echo "$ANDROID_KEY_STORE_CONTENTS" | base64 --decode > keystore.p12
 
           npm run action gulp build android -- --buildMode=release
 

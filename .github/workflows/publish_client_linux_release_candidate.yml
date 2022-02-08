@@ -1,6 +1,6 @@
 name: Publish Client Linux Release Candidate
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       commit_sha:
@@ -16,59 +16,67 @@ jobs:
       RELEASES_REPOSITORY: ${{ secrets.RELEASES_REPOSITORY }}
       RELEASES_DEPLOY_KEY: ${{ secrets.RELEASES_DEPLOY_KEY }}
       RELEASE_COMMIT_SHA: ${{ github.event.inputs.commit_sha }}
-      # STORE_LOGIN: ${{ secrets.SNAP_STORE_LOGIN }} 
+      # STORE_LOGIN: ${{ secrets.SNAP_STORE_LOGIN }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2.3.4
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
 
-    - name: Install Node
-      uses: actions/setup-node@v2.2.0
-      with:
-        node-version: 16
+      - name: Install Node
+        uses: actions/setup-node@v2.2.0
+        with:
+          node-version: 16
 
-    - name: Install NPM Dependencies
-      run: npm ci
+      - name: Install NPM Dependencies
+        run: npm ci
 
-    - name: Tag Release Commit
-      run: |
-        git config --global user.name "OutlineBot"
-        git config --global user.email "outlinebot@users.noreply.github.com"
+      - name: Tag Release Commit
+        run: |
+          git config --global user.name "OutlineBot"
+          git config --global user.email "outlinebot@users.noreply.github.com"
 
-        git tag "linux-$(node scripts/get_version.mjs linux)"
-        git push origin "linux-$(node scripts/get_version.mjs linux)"
+          git tag "linux-$(node scripts/get_version.mjs linux)"
+          git push origin "linux-$(node scripts/get_version.mjs linux)"
 
-    - name: Download Release Candidate
-      uses: dawidd6/action-download-artifact@575b1e4167df67acf7e692af784566618b23c71e
-      with:
-        workflow: build_release_candidates.yml
-        commit: ${{ env.RELEASE_COMMIT_SHA }}
-        name: client_linux_release_${{ env.RELEASE_COMMIT_SHA }}
-        path: client_linux_release
+      - name: Download Release Candidate
+        uses: dawidd6/action-download-artifact@575b1e4167df67acf7e692af784566618b23c71e
+        with:
+          workflow: build_release_candidates.yml
+          commit: ${{ env.RELEASE_COMMIT_SHA }}
+          name: client_linux_release_${{ env.RELEASE_COMMIT_SHA }}
+          path: client_linux_release
 
-    - name: Checkout Releases Repository
-      uses: actions/checkout@v2.3.4
-      with:
-        repository: ${{ env.RELEASES_REPOSITORY }}
-        token: ${{ env.RELEASES_DEPLOY_KEY }}
-        path: outline-releases
-    
-    - name: Push to Releases Repository
-      run: |
-        RELEASE_VERSION="$(node scripts/get_version.mjs linux)"
-        cp client_linux_release/Outline-Client.AppImage outline-releases/client/stable/Outline-Client.AppImage
-        cp client_linux_release/latest-linux.yml outline-releases/client/stable/latest-linux.yml
-        cd outline-releases
-        git checkout master
-        git add client/stable/Outline-Client.AppImage client/stable/latest-linux.yml
-        git commit -m "Release linux client ${RELEASE_VERSION}"
-        git tag "linux-${RELEASE_VERSION}"
-        git push origin "linux-${RELEASE_VERSION}"
-        git push origin master
+      - name: Setup SSH agent
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a /tmp/ssh_agent.sock > /dev/null
 
+          echo "$RELEASES_DEPLOY_KEY" > key
+
+          ssh-add key
+
+      - name: Checkout Releases Repository
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: ${{ env.RELEASES_REPOSITORY }}
+          token: ${{ env.RELEASES_DEPLOY_KEY }}
+          path: outline-releases
+
+      - name: Push to Releases Repository
+        run: |
+          RELEASE_VERSION="$(node scripts/get_version.mjs linux)"
+          cp client_linux_release/Outline-Client.AppImage outline-releases/client/stable/Outline-Client.AppImage
+          cp client_linux_release/latest-linux.yml outline-releases/client/stable/latest-linux.yml
+          cd outline-releases
+          git checkout master
+          git add client/stable/Outline-Client.AppImage client/stable/latest-linux.yml
+          git commit -m "Release linux client ${RELEASE_VERSION}"
+          git tag "linux-${RELEASE_VERSION}"
+          git push origin "linux-${RELEASE_VERSION}"
+          git push origin master
     # TODO(daniellacosse): S3 bucket?
-    
     # TODO(daniellacosse): snap store
-    # - name: Publish to Snap store    
+    # - name: Publish to Snap store
     #   uses: snapcore/action-publish@v1
     #   with:
     #     store_login: ${{ secrets.STORE_LOGIN }}

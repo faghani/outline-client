@@ -1,6 +1,6 @@
 name: Publish Client Android Release Candidate
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       commit_sha:
@@ -17,47 +17,56 @@ jobs:
       RELEASES_DEPLOY_KEY: ${{ secrets.RELEASES_DEPLOY_KEY }}
       RELEASE_COMMIT_SHA: ${{ github.event.inputs.commit_sha }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2.3.4
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
 
-    - name: Install Node
-      uses: actions/setup-node@v2.2.0
-      with:
-        node-version: 16
+      - name: Install Node
+        uses: actions/setup-node@v2.2.0
+        with:
+          node-version: 16
 
-    - name: Install NPM Dependencies
-      run: npm ci
+      - name: Install NPM Dependencies
+        run: npm ci
 
-    - name: Tag Release Commit
-      run: |
-        git config --global user.name "OutlineBot"
-        git config --global user.email "outlinebot@users.noreply.github.com"
-        git tag "android-$(node scripts/get_version.mjs android)"
-        git push origin "android-$(node scripts/get_version.mjs android)"
+      - name: Tag Release Commit
+        run: |
+          git config --global user.name "OutlineBot"
+          git config --global user.email "outlinebot@users.noreply.github.com"
+          git tag "android-$(node scripts/get_version.mjs android)"
+          git push origin "android-$(node scripts/get_version.mjs android)"
 
-    - name: Download Release Candidate
-      uses: dawidd6/action-download-artifact@575b1e4167df67acf7e692af784566618b23c71e
-      with:
-        workflow: build_release_candidates.yml
-        commit: ${{ env.RELEASE_COMMIT_SHA }}
-        name: client_android_release_${{ env.RELEASE_COMMIT_SHA }}
-        path: client_android_release
+      - name: Download Release Candidate
+        uses: dawidd6/action-download-artifact@575b1e4167df67acf7e692af784566618b23c71e
+        with:
+          workflow: build_release_candidates.yml
+          commit: ${{ env.RELEASE_COMMIT_SHA }}
+          name: client_android_release_${{ env.RELEASE_COMMIT_SHA }}
+          path: client_android_release
 
-    - name: Checkout Releases Repository
-      uses: actions/checkout@v2.3.4
-      with:
-        repository: ${{ env.RELEASES_REPOSITORY }}
-        token: ${{ env.RELEASES_DEPLOY_KEY }}
-        path: outline-releases
+      - name: Setup SSH agent
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a /tmp/ssh_agent.sock > /dev/null
 
-    - name: Push to Releases Repository
-      run: |
-        RELEASE_VERSION="$(node scripts/get_version.mjs android)"
-        cp client_android_release/Outline.apks outline-releases/client/Outline.apks
-        cd outline-releases
-        git checkout master
-        git add client/Outline.apks
-        git commit -m "Release android client ${RELEASE_VERSION}"
-        git tag "android-${RELEASE_VERSION}"
-        git push origin "android-${RELEASE_VERSION}"
-        git push origin master
+          echo "$RELEASES_DEPLOY_KEY" > key
+
+          ssh-add key
+
+      - name: Checkout Releases Repository
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: ${{ env.RELEASES_REPOSITORY }}
+          path: outline-releases
+
+      - name: Push to Releases Repository
+        run: |
+          RELEASE_VERSION="$(node scripts/get_version.mjs android)"
+          cp client_android_release/Outline.apks outline-releases/client/Outline.apks
+          cd outline-releases
+          git checkout master
+          git add client/Outline.apks
+          git commit -m "Release android client ${RELEASE_VERSION}"
+          git tag "android-${RELEASE_VERSION}"
+          git push origin "android-${RELEASE_VERSION}"
+          git push origin master
