@@ -12,6 +12,7 @@ jobs:
     name: Publish Client Android Release Candidate
     runs-on: ubuntu-20.04
     timeout-minutes: 15
+    environment: Releases Repository
     env:
       RELEASES_REPOSITORY: ${{ secrets.RELEASES_REPOSITORY }}
       RELEASES_DEPLOY_KEY: ${{ secrets.RELEASES_DEPLOY_KEY }}
@@ -28,13 +29,6 @@ jobs:
       - name: Install NPM Dependencies
         run: npm ci
 
-      - name: Tag Release Commit
-        run: |
-          git config --global user.name "OutlineBot"
-          git config --global user.email "outlinebot@users.noreply.github.com"
-          git tag "android-$(node scripts/get_version.mjs android)"
-          git push origin "android-$(node scripts/get_version.mjs android)"
-
       - name: Download Release Candidate
         uses: dawidd6/action-download-artifact@575b1e4167df67acf7e692af784566618b23c71e
         with:
@@ -43,20 +37,18 @@ jobs:
           name: client_android_release_${{ env.RELEASE_COMMIT_SHA }}
           path: client_android_release
 
-      - name: Setup SSH agent
+      - name: Tag Release Commit
         run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          ssh-agent -a /tmp/ssh_agent.sock > /dev/null
-
-          echo "$RELEASES_DEPLOY_KEY" > key
-
-          ssh-add key
+          git config --global user.name "OutlineBot"
+          git config --global user.email "outlinebot@users.noreply.github.com"
+          git tag "android-$(node scripts/get_version.mjs android)"
+          git push origin "android-$(node scripts/get_version.mjs android)"
 
       - name: Checkout Releases Repository
         uses: actions/checkout@v2.3.4
         with:
           repository: ${{ env.RELEASES_REPOSITORY }}
+          ssh-key: ${{ env.RELEASES_DEPLOY_KEY }}
           path: outline-releases
 
       - name: Push to Releases Repository
@@ -65,6 +57,7 @@ jobs:
           cp client_android_release/Outline.apk outline-releases/client/Outline.apk
           cd outline-releases
           git checkout master
+          git pull
           git add client/Outline.apk
           git commit -m "Release android client ${RELEASE_VERSION}"
           git tag "android-${RELEASE_VERSION}"

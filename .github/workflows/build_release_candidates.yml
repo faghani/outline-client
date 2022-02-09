@@ -78,12 +78,15 @@ jobs:
 
           java -jar bundletool.jar build-apks \
             --bundle=platforms/android/app/build/outputs/bundle/release/app-release.aab \
-            --output=Outline.apk \
-            --mode=universal
+            --output=Outline.apks \
+            --mode=universal \
             --ks=keystore.p12 \
             "--ks-pass=pass:$ANDROID_KEY_STORE_PASSWORD" \
             --ks-key-alias=privatekey \
             "--key-pass=pass:$ANDROID_KEY_STORE_PASSWORD"
+
+          unzip Outline.apks
+          cp universal.apk Outline.apk
 
       - name: Upload Android Release Candidate
         uses: actions/upload-artifact@v2
